@@ -18,7 +18,7 @@ int main() {
     RS::RollingMean<float> rolling_mean;
 
     // example for unstructured data
-    // suppose we get 3, 2, 0 and 1 on the first 4 days. calculate a 2-day rolling mean.
+    // suppose we get 3, 2, 0 and 1 entries on the first 4 days. calculate a 2-day rolling mean.
     rolling_mean.push(1.0);
     rolling_mean.push(2.0);
     rolling_mean.push(3.0);
