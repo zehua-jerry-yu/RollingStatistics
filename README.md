@@ -32,7 +32,8 @@ int main() {
     rolling_mean.push(NAN);
     std::cout << "day4: " << rolling_mean.compute() << std::endl;  // NAN
 
-    // example for structured data (n-dimensioanal arrays). roll_ndarray() will automatically call clear().
+    // example for structured data (n-dimensioanal arrays). we want a 3-day rolling mean, with at least 2 valid entries.
+    // rolling_mean.clear();  // will be called automatically by roll_ndarray()
     float arr[4][3] = {{2.0, 3.0, 1.0},
                        {3.0, 3.5, NAN},
                        {NAN, 4.0, 2.0},
