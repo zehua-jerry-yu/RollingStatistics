@@ -40,7 +40,7 @@ int main() {
                        {NAN, 4.0, 2.0},
                        {-3.0, NAN, NAN}};
     const std::vector<size_t> shape = {4, 3};
-    rolling_mean.roll_ndarray(&arr[0][0], shape, 0, 3, 2);  // axis=0, window=3, min_periods=2
+    rolling_mean.roll_ndarray(&arr[0][0], shape, {}, 0, 3, 2);  // axis=0, window=3, min_periods=2. stride={} uses default c-style.
     std::cout << "arr has changed to:" << std::endl;
     for (size_t i = 0; i != shape[0]; ++i){
         for (size_t j = 0; j != shape[1]; ++j){
