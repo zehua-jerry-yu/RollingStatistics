@@ -2,7 +2,7 @@
 
 This is a lightweight library for calculation of rolling statistics, mainly in two ways:
 
-(1) Inplace calculation over an n-dimensional array over a particular axis, with a fixed window. The array should be represented by a random-access pointer, and may have custom storage order (row-major, column-major or something else). This would include `numpy.ndarray` and C arrays, for example.
+(1) Inplace calculation over an n-dimensional array over a particular axis, with a fixed window. The array should be represented by a random-access pointer, and may have custom storage order (row-major, column-major or some custom strides). This would include `numpy.ndarray` and C arrays, for example.
 
 (2) Manual calculation with a flexible window, via `push()` and `pop()` operations.
 
@@ -18,13 +18,19 @@ int main() {
     RS::RollingMean<float> rolling_mean;
 
     // example for unstructured data
+    // suppose we get 3, 2, 0 and 1 on the first 4 days. calculate a 2-day rolling mean.
+    rolling_mean.push(1.0);
     rolling_mean.push(2.0);
     rolling_mean.push(3.0);
-    rolling_mean.push(4.0);
-    std::cout << "value: " << rolling_mean.compute() << std::endl;  // 3.0
+    std::cout << "day1: " << rolling_mean.compute() << std::endl;  // 2.0
     rolling_mean.push(NAN);
-    rolling_mean.pop();
-    std::cout << "value: " << rolling_mean.compute() << std::endl;  // 3.5
+    rolling_mean.push(4.0);
+    std::cout << "day2: " << rolling_mean.compute() << std::endl;  // 2.5
+    for (int i = 0; i != 3; ++i) { rolling_mean.pop(); }
+    std::cout << "day3: " << rolling_mean.compute() << std::endl;  // 4.0
+    for (int i = 0; i != 2; ++i) { rolling_mean.pop(); }
+    rolling_mean.push(NAN);
+    std::cout << "day4: " << rolling_mean.compute() << std::endl;  // NAN
 
     // example for structured data (n-dimensioanal arrays). roll_ndarray() will automatically call clear().
     float arr[4][3] = {{2.0, 3.0, 1.0},
