@@ -38,8 +38,8 @@ int main() {
     /* result:
      * nan nan nan
      * 2.5 3.25 nan
-     * 2.5 3.5 1.5
-     * 0 3.75 nan
+     * 2.5 3.5  1.5
+     * 0   3.75 nan
      */
     system("pause");
     return 0;
