@@ -59,3 +59,24 @@ int main() {
 }
 
 ```
+
+## Example in Python
+```py
+import numpy as np
+import rolling_statistics_py as rs
+
+arr = np.array([[2.0, 3.0, 1.0],
+               [3.0, 3.5, np.nan],
+               [np.nan, 4.0, 2.0],
+               [-3.0, np.nan, np.nan]])
+rolling_mean = rs.RollingMean_double()
+rolling_mean.roll_ndarray(arr=arr, axis=0, window=3, min_periods=2)
+print(arr)  # same result
+
+```
+
+## Future Updates
+
+The implementation uses two layers of inheritance and some virtual functions, and virtual functions are known to be pretty slow, I will start optimizing this and other parts of the code when I have time.
+
+Meanwhile I will implement the ability to use multiple windows in `RollingMomentStatistics`, and some two-sample t-tests.
