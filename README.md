@@ -1,5 +1,7 @@
 # `RollingStatistics`: Fast & Efficient Calculation of Rolling Mean/Variance/Maximum/Quantile etc. for C++ and Python
 
+\[Note: this readme is not finished.\]
+
 This is a lightweight library for calculation of rolling statistics, mainly in two ways:
 
 (1) Inplace calculation over an n-dimensional array over a particular axis, with a fixed window. The array should be represented by a pointer, and may have custom storage order (row-major, column-major or some custom strides). This would include `numpy.ndarray` and C arrays, for example.
