@@ -79,6 +79,8 @@ print(arr)  # same result
 
 ## Future Updates
 
-The implementation uses two layers of inheritance and some virtual functions, and virtual functions are known to be pretty slow, I will start optimizing this and other parts of the code when I have time.
+(1) Optimize virtual functions.
 
-Meanwhile I will implement multiple windows (of different lengths) in `RollingMomentStatistics`, and some two-sample t-tests.
+(2) Implement support for multiple windows in `RollingMomentStatistics`, and some two-sample t-tests.
+
+(3) May switch to use order statistics tree from `libstdc++` for O(logm) order statistics operation and rank operation. Currently Fenwick Tree is preferred due to its lightweight.
