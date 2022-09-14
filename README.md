@@ -79,4 +79,4 @@ print(arr)  # same result
 
 The implementation uses two layers of inheritance and some virtual functions, and virtual functions are known to be pretty slow, I will start optimizing this and other parts of the code when I have time.
 
-Meanwhile I will implement the ability to use multiple windows in `RollingMomentStatistics`, and some two-sample t-tests.
+Meanwhile I will implement multiple windows (of different lengths) in `RollingMomentStatistics`, and some two-sample t-tests.
