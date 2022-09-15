@@ -162,42 +162,42 @@ RollingStatistics(bool skip_nan=true)
 
 The constructor. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
 
-### RS::RollingStatistics::clear()
+### RS::RollingStatistics<value_type>::clear()
 ```cpp
 void clear()
 ```
 
 Clears all internal data. This function is also called by the constructor.
 
-### RS::RollingStatistics::front()
+### RS::RollingStatistics<value_type>::front()
 ```cpp
 void value_type front()
 ```
 
 Returns the oldest element in the current window. Unlike in STL containers, this method does not return a reference, as the stored values should not be changed.
 
-### RS::RollingStatistics::push()
+### RS::RollingStatistics<value_type>::push()
 ```cpp
 void push(const value_type& val)
 ```
 
 Pushes a value into the internal data structures.
 
-### RS::RollingStatistics::pop()
+### RS::RollingStatistics<value_type>::pop()
 ```cpp
 void pop()
 ```
 
 Pops the oldest value in the current window from the internal data structures.
 
-### RS::RollingStatistics::size()
+### RS::RollingStatistics<value_type>::size()
 ```cpp
 size_t size()
 ```
 
 Returns the number of elements in the current window.
 
-### RS::RollingStatistics::size_nan()
+### RS::RollingStatistics<value_type>::size_nan()
 ```cpp
 size_t size_nan()
 ```
@@ -205,26 +205,38 @@ size_t size_nan()
 CHANGE THIS
 Returns the number of NaN values in the current window.
 
-### RS::RollingStatistics::size_notnan()
+### RS::RollingStatistics<value_type>::size_notnan()
 ```cpp
 size_t size_notnan()
 ```
 
 Returns the number of non-NaN values in the current window.
 
-### RS::RollingStatistics::compute()
+### RS::RollingStatistics<value_type>::compute()
 ```cpp
 value_type compute()
 ```
 
 Returns the target rolling statistics (mean, variance, etc.) calculated from the current window.
 
-### RS::RollingStatistics::roll_ndarray
+### RS::RollingStatistics<value_type>::roll_ndarray
 ```cpp
 roll_ndarray(value_type* ptr_arr, const std::vector<size_t>& shape, size_t axis, size_t window, size_t min_periods, std::vector<size_t> strides={})
 ```
 
 Performs inplace `compute()` along the specified axis of the given array.
+
+`ptr_arr`: Pointer to the target array, and must *not* be located in a read-only section of the memory (for example, a `const` array compiled by `gcc`).
+
+`shape`: Shape of the target array. The `size()` of this vector would be the number of dimensions.
+
+`axis`: The axis along which to perform the computation. The function will process groups of `shape[axis]` number of cells at a time, before calling `clear()` and moving on to the next group.
+
+`window`: The maximum size of the rolling window. The first `window - 1` values of each group will use a window size the same as their position (`1, 2, ... window - 1`), all values after will use window size `window`.
+
+`min_periods`: The minimum requirement for non-NaN values in the current window to perform computarion. If not met, the current cell will be replaced with `NAN` instead. If this value is positive, the first `min_periods' cells of each group will always be set to `NAN`.
+
+`strides`: The number of positions (not bytes, unlike in NumPy) to skip to reach the next cell in each dimension, *Leave empty unless absolutely necessary*. This is meant as an interface to `numpy.ndarray`, which uses strides to determine the expansion order of an n-dimensional array, or even skip some parts of the memory to achieve some advanced indexing. Arrays in C++ always use row-major order, which is the default behavior for this parameter. As the NumPy official documentary mentions (https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html), meddling with strides should be done with extreme care. We have added an extra protection to prevent the pointer from going out of bounds of the array, should you somehow end up in a situation to utilize this parameter.
 
 ## Q&A
 
