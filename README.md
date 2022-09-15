@@ -162,42 +162,42 @@ RollingStatistics(bool skip_nan=true)
 
 The constructor. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
 
-### RS::RollingStatistics<value_type>::clear()
+### RS::RollingStatistics<value_type>::clear
 ```cpp
 void clear()
 ```
 
 Clears all internal data. This function is also called by the constructor.
 
-### RS::RollingStatistics<value_type>::front()
+### RS::RollingStatistics<value_type>::front
 ```cpp
 void value_type front()
 ```
 
 Returns the oldest element in the current window. Unlike in STL containers, this method does not return a reference, as the stored values should not be changed.
 
-### RS::RollingStatistics<value_type>::push()
+### RS::RollingStatistics<value_type>::push
 ```cpp
 void push(const value_type& val)
 ```
 
 Pushes a value into the internal data structures.
 
-### RS::RollingStatistics<value_type>::pop()
+### RS::RollingStatistics<value_type>::pop
 ```cpp
 void pop()
 ```
 
 Pops the oldest value in the current window from the internal data structures.
 
-### RS::RollingStatistics<value_type>::size()
+### RS::RollingStatistics<value_type>::size
 ```cpp
 size_t size()
 ```
 
 Returns the number of elements in the current window.
 
-### RS::RollingStatistics<value_type>::size_nan()
+### RS::RollingStatistics<value_type>::size_nan
 ```cpp
 size_t size_nan()
 ```
@@ -205,14 +205,14 @@ size_t size_nan()
 CHANGE THIS
 Returns the number of NaN values in the current window.
 
-### RS::RollingStatistics<value_type>::size_notnan()
+### RS::RollingStatistics<value_type>::size_notnan
 ```cpp
 size_t size_notnan()
 ```
 
 Returns the number of non-NaN values in the current window.
 
-### RS::RollingStatistics<value_type>::compute()
+### RS::RollingStatistics<value_type>::compute
 ```cpp
 value_type compute()
 ```
