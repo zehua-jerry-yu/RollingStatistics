@@ -238,7 +238,7 @@ Performs inplace `compute()` along the specified axis of the given array.
 
 `strides`: The number of positions (not bytes, unlike in NumPy) to skip to reach the next cell in each dimension, *Leave empty unless absolutely necessary*. This is meant as an interface to `numpy.ndarray`, which uses strides to determine the expansion order of an n-dimensional array, or even skip some parts of the memory to achieve some advanced indexing. Arrays in C++ always use row-major order, which is the default behavior for this parameter. As the [NumPy official documentary](https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html) mentions, meddling with strides should be done with extreme care. We have added an extra protection to prevent the pointer from going out of bounds of the array, should you somehow end up in a situation to utilize this parameter.
 
-Note: As seen in the starter example, this interface is not provided in Python, use instead the following:
+Note: As seen in the starter example, this interface is not provided in Python, use instead the following wrapper function. This is due to the lack of pointer variables in python, the function then resorts to 'fetching' the pointer imbedded in a `numpy.ndarray`. Note that the array must not be a temporary object (or in C++ terms, an rvalue).
 
 ```py
 roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
@@ -248,7 +248,25 @@ roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
 
 ### RS::RollingMean<value_type>
 
-Yields rolling mean for computation.
+Yields rolling mean for computation. Uses `std::queue` as internal data structure. `O(n)` time and `O(window)` space complexity, where `n` id the size of the entire array (for a structured array, it is the production of all values in `shape`), and `window` is the maximum size of the window throughout the lifetime of the object (fixed for a structured array).
+
+### RS::RollingVariance<value_type>
+
+
+### RS::RollingSkewness<value_type>
+
+
+### RS::RollingMaximum<value_type>
+
+
+### RS::RollingMinimum<value_type>
+
+
+### RS::RollingRank<value_type>
+
+
+### RS::RollingQuantile<value_type>
+
 
 ## Q&A
 
