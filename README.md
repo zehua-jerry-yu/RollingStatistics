@@ -59,7 +59,7 @@ int main() {
 }
 ```
 
-## Example in Python
+## A Starter Example in Python
 ```py
 import numpy as np
 import rolling_statistics_py as rsp
