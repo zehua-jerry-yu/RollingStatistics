@@ -153,9 +153,13 @@ Now, you should find a file with name similar to `rolling_statistics_py.cp36-win
 
 ## Usage Documentary
 
-For C++, all classes are derived from `RS::RollingStatistics`{:.cpp} and provide the same interfaces:
+For C++, all classes are derived from `RS::RollingStatistics` and provide the same interfaces:
 
-`RollingStatistics(bool skip_nan)`{:.cpp}: The constructor. It accepts one parameter
+```cpp
+RollingStatistics(bool skip_nan)
+```
+
+The constructor. It accepts one parameter
 
 `clear()`{:.cpp}: Clears all internal data.
 `
