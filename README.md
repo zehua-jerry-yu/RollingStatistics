@@ -1,4 +1,4 @@
-# `RollingStatistics`: Fast & Efficient Calculation of Rolling Mean/Variance/Maximum/Quantile etc. for C++ and Python
+# `RollingRank`: Fast & Efficient Calculation of Rolling Mean/Variance/Maximum/Quantile etc. for C++ and Python
 
 \[Note: this readme is not finished.\]
 
