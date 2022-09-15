@@ -234,7 +234,7 @@ Performs inplace `compute()` along the specified axis of the given array.
 
 `window`: The maximum size of the rolling window. The first `window - 1` values of each group will use a window size the same as their position (`1, 2, ... window - 1`), all values after will use window size `window`.
 
-`min_periods`: The minimum requirement for non-NaN values in the current window to perform computarion. If not met, the current cell will be replaced with `NAN` instead. If this value is positive, the first `min_periods' cells of each group will always be set to `NAN`.
+`min_periods`: The minimum requirement for non-NaN values in the current window to perform computarion. If not met, the current cell will be replaced with `NAN` instead. If this value is positive, the first `min_periods` cells of each group will always be set to `NAN`.
 
 `strides`: The number of positions (not bytes, unlike in NumPy) to skip to reach the next cell in each dimension, *Leave empty unless absolutely necessary*. This is meant as an interface to `numpy.ndarray`, which uses strides to determine the expansion order of an n-dimensional array, or even skip some parts of the memory to achieve some advanced indexing. Arrays in C++ always use row-major order, which is the default behavior for this parameter. As the [NumPy official documentary](https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html) mentions, meddling with strides should be done with extreme care. We have added an extra protection to prevent the pointer from going out of bounds of the array, should you somehow end up in a situation to utilize this parameter.
 
