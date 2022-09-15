@@ -101,17 +101,52 @@ Additionally, you need to install `Pybind11` in your Python environment, and it 
 
 Installing from pip in the virtual environment is easy:
 
-`.../env_name/Scripts/pip install pybind11`
+`$ .../env_name/Scripts/pip install pybind11`
+
+Or with anaconda, simply run the following commands with the virtual environment activated:
+
+`$ conda install pybind11`
 
 ## Installation
 
-For C++, no installation is needed. For Python, two installation methods are provided:
+For C++, no installation is needed, the only file you need is `src/rolling_statistics.hpp`. For Python, two installation methods are provided:
 
-## setuptools
+### setuptools
 
-This method is 
+This method is the easiest, just run the following commands in the project root folder:
 
+```
+cd src
+python setup.py install
+```
 
+There is one drawback though: it is not possible to specify which compiler to use. Therefore, on Windows, there is a high chance that the MSVC compiler will be used by default. If you some errors along the lines of `"ext/pb_ds/assoc_container.hpp": No such file or directory`, that would be the case, and you need to use the second method.
+
+### makefile
+
+For this method, you will first need to install `cmake`. Then, run the following commands in the project root directory:
+
+For Windows (MinGW),
+
+```
+$ mkdir build
+$ cd build
+$ cmake .. -G "MinGW Makefiles" -DPYTHON_LIBRARY_DIR=".../env_name/Lib/site-packages" -DPYTHON_EXECUTABLE=".../env_name/python.exe" -Dpybind11_DIR=".../env_name/Lib/site-packages/pybind11/share/cmake/pybind11"
+$ MinGW32-make
+$ MinGW32-make install
+```
+
+For Linux,
+
+```
+$ mkdir build
+$ cd build
+$ cmake .. -DPYTHON_LIBRARY_DIR=".../env_name/Lib/site-packages" -DPYTHON_EXECUTABLE=".../env_name/python.exe" -Dpybind11_DIR=".../env_name/Lib/site-packages/pybind11/share/cmake/pybind11"
+$ make
+$ make install
+```
+
+Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
 
 ## Q&A
 
