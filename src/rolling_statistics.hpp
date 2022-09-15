@@ -6,7 +6,8 @@
  * @author Zehua Yu (zehua.yu@columbia.edu)
  * @version 1.0
  * @date 2022-09-12
- * @brief
+ * @copyright Copyright (c) 2022 Zehua Yu. Licensed under the MIT license.
+ * @brief RollingStatistics provides fast and efficient calculation of rolling mean/variance/maximum/quantile, etc.
  */
 
 /*  Inheritance:
@@ -29,32 +30,45 @@
 #include <algorithm>
 #include <unordered_map>
 #include <initializer_list>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
 
 namespace RS{
 
 const double EPSILON = 1.0e-16;
 
+/*
+ * we are using std::less_equal to implement a 'multiset' with a 'set',
+ * as __gnu_pbds::tree does not provide multiset functionality.
+ * note that in this case, find() would always fail,
+ * upper_bound() and lower_bound() are exactly exchanged, and
+ * erase(val) should be replaced with erase(upper_bound(val)).
+ * */
+template <typename D>
+using order_statistics_tree = __gnu_pbds::tree<D, __gnu_pbds::null_type, std::less_equal<D>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update>;
+
+
 template <typename D>
 class RollingStatistics{
     /* The base class. */
 protected:
-    bool skip_nan = true;  // whether to skip NaN values in a window, or to propagate them.
-    size_t num_values_nan = 0;  // number of NaNs in the current window.
-    size_t num_values_notnan = 0;  // number of non-NaNs in the current window.
+    bool skip_nan = true;  // whether to skip NaN vals in a window, or to propagate them.
+    size_t num_vals_nan = 0;  // number of NaNs in the current window.
+    size_t num_vals_notnan = 0;  // number of non-NaNs in the current window.
     virtual D compute_aux() = 0;  // compute target statistics.
 public:
     static const std::string name;  // prefix for name of class in Python
     virtual void clear() = 0;
     // accessor functions
-    inline size_t size() const { return num_values_nan + num_values_notnan; }
-    inline const size_t& size_nan() const { return num_values_nan; }
-    inline const size_t& size_notnan() const { return num_values_notnan; }
+    inline size_t size() const { return num_vals_nan + num_vals_notnan; }
+    inline const size_t& size_nan() const { return num_vals_nan; }
+    inline const size_t& size_notnan() const { return num_vals_notnan; }
     virtual D front() = 0;
-    virtual void push(const D& value) = 0;
+    virtual void push(const D& val) = 0;
     virtual void pop() = 0;
     D compute() {
-        if (num_values_notnan == 0 || (!skip_nan && num_values_nan > 0)) {
+        if (num_vals_notnan == 0 || (!skip_nan && num_vals_nan > 0)) {
             return NAN;
         } else {
             return compute_aux();
@@ -138,7 +152,6 @@ public:
             }
         }
     }
-
 };
 
 
@@ -160,11 +173,11 @@ public:
         /* can be manually called or called by the constructor */
         this->unnormalized_moments = std::vector<D>(this->num_moments, 0);
         this->vecs_in_window = std::vector<std::queue<D>>(this->num_moments);
-        this->num_values_nan = 0;
-        this->num_values_notnan = 0;
+        this->num_vals_nan = 0;
+        this->num_vals_notnan = 0;
     }
     D front() {
-        /* return the next (original x, not x^2 etc.) value that will be popped. */
+        /* return the next (original x, not x^2 etc.) val that will be popped. */
         assert(!this->vecs_in_window[0].empty());
         return this->vecs_in_window[0].front();
     }
@@ -174,31 +187,31 @@ public:
             pop_aux(index);
         }
     }
-    void push_aux(D value, size_t index) {
-        /* add a new value to the maintained window */
-        this->vecs_in_window[index].push(value);
-        if (!std::isnan(value)) {
-            this->unnormalized_moments[index] += value;
+    void push_aux(D val, size_t index) {
+        /* add a new val to the maintained window */
+        this->vecs_in_window[index].push(val);
+        if (!std::isnan(val)) {
+            this->unnormalized_moments[index] += val;
             if (index == 0) {  // if num_moments > 1, multiple add() will be called for one cell
-                ++this->num_values_notnan;
+                ++this->num_vals_notnan;
             }
         }
         else {
             if (index == 0) {
-                ++this->num_values_nan;
+                ++this->num_vals_nan;
             }
         }
     }
     void pop_aux(size_t index) {
-        /* remove a value from the maintained window, which should have been pushed before. */
+        /* remove a val from the maintained window, which should have been pushed before. */
         assert(!this->vecs_in_window[index].empty());
-        const D& value = this->vecs_in_window[index].front();
-        if (!std::isnan(value)) {
-            this->unnormalized_moments[index] -= value;
-            if (index == 0) { --this->num_values_notnan; }
+        const D& val = this->vecs_in_window[index].front();
+        if (!std::isnan(val)) {
+            this->unnormalized_moments[index] -= val;
+            if (index == 0) { --this->num_vals_notnan; }
         }
         else {
-            if (index == 0) { --this->num_values_nan; }
+            if (index == 0) { --this->num_vals_nan; }
         }
         this->vecs_in_window[index].pop();
     }
@@ -210,13 +223,13 @@ class RollingMean : public RollingMomentStatistics<D> {
     /* unnormalized_moments[0] stores \Sum{x_i} */
 protected:
     D compute_aux() {
-        D n = static_cast<D>(this->num_values_notnan);
+        D n = static_cast<D>(this->num_vals_notnan);
         return this->get_moments()[0] / n;
     }
 public:
     static const std::string name;
-    void push(const D& value) {
-        this->push_aux(value, 0);
+    void push(const D& val) {
+        this->push_aux(val, 0);
     }
     explicit RollingMean(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 1){}
 };
@@ -230,16 +243,16 @@ class RollingVariance : public RollingMomentStatistics<D> {
 protected:
     D compute_aux() {
         // \Sum{(x_i - x_mean)^2} / n = \Sum{x_i^2} / n - x_mean^2
-        D n = static_cast<D>(this->num_values_notnan);
+        D n = static_cast<D>(this->num_vals_notnan);
         const std::vector<D>& moments_ = this->get_moments();
         D x_mean = moments_[0] / n;
         return moments_[1] / n - x_mean * x_mean;
     }
 public:
     static const std::string name;
-    void push(const D& value) {
-        this->push_aux(value, 0);
-        this->push_aux(value * value, 1);
+    void push(const D& val) {
+        this->push_aux(val, 0);
+        this->push_aux(val * val, 1);
     }
     explicit RollingVariance(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 2){}
 };
@@ -258,7 +271,7 @@ protected:
         =  \Sum{x_i^3} / n - 3 * \Sum{x_i^2} / n * x_mean + 2 * x_mean^3
         finally divie by sigma^3
         */
-        D n = static_cast<D>(this->num_values_notnan);
+        D n = static_cast<D>(this->num_vals_notnan);
         const std::vector<D>& moments_ = this->get_moments();
         D x_mean = moments_[0] / n;
         D x_var = moments_[1] / n - x_mean * x_mean;
@@ -271,10 +284,10 @@ protected:
     }
 public:
     static const std::string name;
-    void push(const D& value) {
-        this->push_aux(value, 0);
-        this->push_aux(value * value, 1);
-        this->push_aux(value * value * value, 2);
+    void push(const D& val) {
+        this->push_aux(val, 0);
+        this->push_aux(val * val, 1);
+        this->push_aux(val * val * val, 2);
     }
     explicit RollingSkewness(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 3){}
 };
@@ -287,7 +300,7 @@ class RollingZScore : public RollingMomentStatistics<D> {
     /* unnormalized_moments[0]~[2] store \Sum{x_i}, x_i, \Sum{x_i^2} */
 protected:
     D compute_aux() {
-        D n = static_cast<D>(this->num_values_notnan);
+        D n = static_cast<D>(this->num_vals_notnan);
         const std::vector<D>& moments_ = this->get_moments();
         D x = moments_[1];
         D x_mean = moments_[0] / n;
@@ -300,13 +313,13 @@ protected:
     }
 public:
     static const std::string name;
-    void push(const D& value) {
-        this->push_aux(value, 0);
+    void push(const D& val) {
+        this->push_aux(val, 0);
         if (this->vecs_in_window[1].size() >= 1) {  // maintain a short window of 1
             this->pop_aux(1);
         }
-        this->push_aux(value, 1);
-        this->push_aux(value * value, 2);
+        this->push_aux(val, 1);
+        this->push_aux(val * val, 2);
     }
     void pop() {  // also tricky part of zscore
         this->pop_aux(0);
@@ -335,31 +348,31 @@ public:
         /* can be manually called or called by the constructor */
         vals_in_window = std::queue<D>();
         maximums = std::deque<D>();
-        this->num_values_nan = 0;
-        this->num_values_notnan = 0;
+        this->num_vals_nan = 0;
+        this->num_vals_notnan = 0;
     }
     D front(){
         assert(!vals_in_window.empty());
         return vals_in_window.front();
     }
-    void push(const D& value){
-        vals_in_window.push(value);
-        if (std::isnan(value)){
-            ++this->num_values_nan;
+    void push(const D& val){
+        vals_in_window.push(val);
+        if (std::isnan(val)){
+            ++this->num_vals_nan;
         } else {
-            while (!maximums.empty() && maximums.back() < value){ maximums.pop_back(); }
-            maximums.push_back(value);
-            ++this->num_values_notnan;
+            while (!maximums.empty() && maximums.back() < val){ maximums.pop_back(); }
+            maximums.push_back(val);
+            ++this->num_vals_notnan;
         }
     }
     void pop(){
-        D value = front();
+        D val = front();
         vals_in_window.pop();
-        if (std::isnan(value)){
-            --this->num_values_nan;
+        if (std::isnan(val)){
+            --this->num_vals_nan;
         } else {
-            if (value == maximums.front()){ maximums.pop_front(); }
-            --this->num_values_notnan;
+            if (val == maximums.front()){ maximums.pop_front(); }
+            --this->num_vals_notnan;
         }
     }
 };
@@ -383,36 +396,83 @@ public:
         /* can be manually called or called by the constructor */
         vals_in_window = std::queue<D>();
         minimums = std::deque<D>();
-        this->num_values_nan = 0;
-        this->num_values_notnan = 0;
+        this->num_vals_nan = 0;
+        this->num_vals_notnan = 0;
     }
     D front(){
         assert(!vals_in_window.empty());
         return vals_in_window.front();
     }
-    void push(const D& value){
-        vals_in_window.push(value);
-        if (std::isnan(value)){
-            ++this->num_values_nan;
+    void push(const D& val){
+        vals_in_window.push(val);
+        if (std::isnan(val)){
+            ++this->num_vals_nan;
         } else {
-            while (!minimums.empty() && minimums.back() > value){ minimums.pop_back(); }
-            minimums.push_back(value);
-            ++this->num_values_notnan;
+            while (!minimums.empty() && minimums.back() > val){ minimums.pop_back(); }
+            minimums.push_back(val);
+            ++this->num_vals_notnan;
         }
     }
     void pop(){
-        D value = front();
+        D val = front();
         vals_in_window.pop();
-        if (std::isnan(value)){
-            --this->num_values_nan;
+        if (std::isnan(val)){
+            --this->num_vals_nan;
         } else {
-            if (value == minimums.front()){ minimums.pop_front(); }
-            --this->num_values_notnan;
+            if (val == minimums.front()){ minimums.pop_front(); }
+            --this->num_vals_notnan;
         }
     }
 };
 template <typename D>
 const std::string RollingMin<D>::name = "RollingMin";
+
+
+template <typename D>
+class RollingRank : public RollingStatistics<D>{
+protected:
+    std::deque<D> vals_in_window;
+    order_statistics_tree<D> ost;
+    D compute_aux(){
+        assert(!vals_in_window.empty());
+        return ost.order_of_key(vals_in_window.back());
+    }
+public:
+    explicit RollingRank(bool skip_nan_){ this->skip_nan = skip_nan_; clear(); }
+    static const std::string name;
+    void clear() {
+        /* can be manually called or called by the constructor */
+        vals_in_window = std::deque<D>();
+        ost = order_statistics_tree<D>();
+        this->num_vals_nan = 0;
+        this->num_vals_notnan = 0;
+    }
+    D front(){
+        assert(!vals_in_window.empty());
+        return vals_in_window.front();
+    }
+    void push(const D& val){
+        vals_in_window.push_back(val);
+        if (std::isnan(val)){
+            ++this->num_vals_nan;
+        } else {
+            ost.insert(val);
+            ++this->num_vals_notnan;
+        }
+    }
+    void pop(){
+        D val = front();
+        vals_in_window.pop_front();
+        if (std::isnan(val)){
+            --this->num_vals_nan;
+        } else {
+            ost.erase(ost.upper_bound(val));
+            --this->num_vals_notnan;
+        }
+    }
+};
+template <typename D>
+const std::string RollingRank<D>::name = "RollingRank";
 
 
 }  // namespace RS
