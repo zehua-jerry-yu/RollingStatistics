@@ -151,6 +151,16 @@ $ make install
 
 Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
 
+## Usage Documentary
+
+For C++, all classes are derived from `RS::RollingStatistics`{:.cpp} and provide the same interfaces:
+
+`RollingStatistics(bool skip_nan)`{:.cpp}: The constructor. It accepts one parameter
+
+`clear()`{:.cpp}: Clears all internal data.
+`
+
+
 ## Q&A
 
 Q: I applied `roll_ndarray()` to a numpy array but the array is not changed, why?
