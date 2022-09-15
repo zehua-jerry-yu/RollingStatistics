@@ -123,7 +123,7 @@ cd src
 python setup.py install
 ```
 
-There is one drawback though: it is not possible to specify which compiler to use. Therefore, on Windows, there is a high chance that the MSVC compiler will be used by default. If you some errors along the lines of `"ext/pb_ds/assoc_container.hpp": No such file or directory`, that would be the case, and you need to use the second method.
+There is one drawback though: it is not possible to specify which compiler to use. Therefore, on Windows, there is a high chance that the MSVC compiler will be used by default. If you see some errors along the lines of `"ext/pb_ds/assoc_container.hpp": No such file or directory`, that would be the case, and you need to use the second method.
 
 ### makefile
 
@@ -162,5 +162,3 @@ A: It is highly likely the datatypes do not match. For example, numpy creates ar
 (1) Optimize virtual functions.
 
 (2) Implement support for multiple windows in `RollingMomentStatistics`, and some two-sample t-tests.
-
-(3) May switch to use order statistics tree from `libstdc++` for O(logm) order statistics operation and rank operation. Currently Fenwick Tree is preferred due to its lightweight.
