@@ -156,14 +156,75 @@ Now, you should find a file with name similar to `rolling_statistics_py.cp36-win
 For C++, all classes are derived from `RS::RollingStatistics` and provide the same interfaces:
 
 ```cpp
-RollingStatistics(bool skip_nan)
+RollingStatistics(bool skip_nan=true)
 ```
 
-The constructor. It accepts one parameter
+The constructor. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
 
-`clear()`{:.cpp}: Clears all internal data.
-`
 
+```cpp
+void clear()
+```
+
+Clears all internal data. This function is also called by the constructor.
+
+
+```cpp
+void value_type front()
+```
+
+Returns the oldest element in the current window. Unlike in STL containers, this method does not return a reference, as the stored values should not be changed.
+
+
+```cpp
+void push(const value_type& val)
+```
+
+
+Pushes a value into the internal data structures.
+
+
+```cpp
+void pop()
+```
+
+Pops the oldest value in the current window from the internal data structures.
+
+
+```cpp
+size_t size()
+```
+
+Returns the number of elements in the current window.
+
+
+```cpp
+size_t size_nan()
+```
+
+CHANGE THIS
+Returns the number of NaN values in the current window.
+
+
+```cpp
+size_t size_notnan()
+```
+
+Returns the number of non-NaN values in the current window.
+
+
+```cpp
+value_type compute()
+```
+
+Returns the target rolling statistics calculated from the current window.
+
+
+```cpp
+roll_ndarray(value_type* ptr_arr, const std::vector<size_t>& shape, size_t axis, size_t window, size_t min_periods, std::vector<size_t> strides={})
+```
+
+Performs inplace `compute()` along the specified axis of the given array.
 
 ## Q&A
 
