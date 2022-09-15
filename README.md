@@ -151,9 +151,9 @@ $ make install
 
 Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
 
-## Usage Documentation
+## Usage Documentation: Interfaces
 
-For C++, all classes are derived from `RS::RollingStatistics` and provide the same interfaces:
+All classes are derived from `RS::RollingStatistics` and provide the same interfaces, for both C++ and Python (except `roll_ndarray()`, which you will see).
 
 ### constructor
 ```cpp
@@ -236,7 +236,19 @@ Performs inplace `compute()` along the specified axis of the given array.
 
 `min_periods`: The minimum requirement for non-NaN values in the current window to perform computarion. If not met, the current cell will be replaced with `NAN` instead. If this value is positive, the first `min_periods' cells of each group will always be set to `NAN`.
 
-`strides`: The number of positions (not bytes, unlike in NumPy) to skip to reach the next cell in each dimension, *Leave empty unless absolutely necessary*. This is meant as an interface to `numpy.ndarray`, which uses strides to determine the expansion order of an n-dimensional array, or even skip some parts of the memory to achieve some advanced indexing. Arrays in C++ always use row-major order, which is the default behavior for this parameter. As the NumPy official documentary mentions (https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html), meddling with strides should be done with extreme care. We have added an extra protection to prevent the pointer from going out of bounds of the array, should you somehow end up in a situation to utilize this parameter.
+`strides`: The number of positions (not bytes, unlike in NumPy) to skip to reach the next cell in each dimension, *Leave empty unless absolutely necessary*. This is meant as an interface to `numpy.ndarray`, which uses strides to determine the expansion order of an n-dimensional array, or even skip some parts of the memory to achieve some advanced indexing. Arrays in C++ always use row-major order, which is the default behavior for this parameter. As the [NumPy official documentary](https://numpy.org/doc/stable/reference/generated/numpy.lib.stride_tricks.as_strided.html) mentions, meddling with strides should be done with extreme care. We have added an extra protection to prevent the pointer from going out of bounds of the array, should you somehow end up in a situation to utilize this parameter.
+
+Note: As seen in the starter example, this interface is not provided in Python, use instead the following:
+
+```py
+roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
+```
+
+## Usage Documentation: Classes
+
+### RS::RollingMean<value_type>
+
+Yields rolling mean for computation.
 
 ## Q&A
 
