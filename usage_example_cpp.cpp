@@ -1,7 +1,7 @@
-/* A simple example to showcase the use of rolling_statistics in C++. */
+/* Some simple examples to showcase the use of rolling_statistics in C++. */
 
 #include <iostream>
-#include "rolling_statistics.hpp"
+#include "src/rolling_statistics.hpp"
 
 int main() {
     // default constructor: skip_nan=true
