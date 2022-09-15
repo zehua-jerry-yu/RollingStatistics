@@ -250,8 +250,11 @@ roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
 
 Yields rolling mean for computation. Uses `std::queue` as internal data structure. `O(n)` time and `O(window)` space complexity, where `n` id the size of the entire array (for a structured array, it is the production of all values in `shape`), and `window` is the maximum size of the window throughout the lifetime of the object (fixed for a structured array).
 
+$$\frac{ \Sigma_{i \in I}X_i}{|I|}$$
+
 ### RS::RollingVariance<value_type>
 
+Yields (biased) rolling variance for computation. Uses `std::queue` as internal data structure. `O(n)` time and `O(window)` space complexity.
 
 ### RS::RollingSkewness<value_type>
 
