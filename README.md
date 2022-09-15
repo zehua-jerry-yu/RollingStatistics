@@ -151,53 +151,53 @@ $ make install
 
 Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
 
-## Usage Documentary
+## Usage Documentation
 
 For C++, all classes are derived from `RS::RollingStatistics` and provide the same interfaces:
 
+### constructor
 ```cpp
 RollingStatistics(bool skip_nan=true)
 ```
 
 The constructor. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
 
-
+### RS::RollingStatistics::clear()
 ```cpp
 void clear()
 ```
 
 Clears all internal data. This function is also called by the constructor.
 
-
+### RS::RollingStatistics::front()
 ```cpp
 void value_type front()
 ```
 
 Returns the oldest element in the current window. Unlike in STL containers, this method does not return a reference, as the stored values should not be changed.
 
-
+### RS::RollingStatistics::push()
 ```cpp
 void push(const value_type& val)
 ```
 
-
 Pushes a value into the internal data structures.
 
-
+### RS::RollingStatistics::pop()
 ```cpp
 void pop()
 ```
 
 Pops the oldest value in the current window from the internal data structures.
 
-
+### RS::RollingStatistics::size()
 ```cpp
 size_t size()
 ```
 
 Returns the number of elements in the current window.
 
-
+### RS::RollingStatistics::size_nan()
 ```cpp
 size_t size_nan()
 ```
@@ -205,21 +205,21 @@ size_t size_nan()
 CHANGE THIS
 Returns the number of NaN values in the current window.
 
-
+### RS::RollingStatistics::size_notnan()
 ```cpp
 size_t size_notnan()
 ```
 
 Returns the number of non-NaN values in the current window.
 
-
+### RS::RollingStatistics::compute()
 ```cpp
 value_type compute()
 ```
 
-Returns the target rolling statistics calculated from the current window.
+Returns the target rolling statistics (mean, variance, etc.) calculated from the current window.
 
-
+### RS::RollingStatistics::roll_ndarray
 ```cpp
 roll_ndarray(value_type* ptr_arr, const std::vector<size_t>& shape, size_t axis, size_t window, size_t min_periods, std::vector<size_t> strides={})
 ```
