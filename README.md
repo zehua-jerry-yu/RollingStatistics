@@ -78,7 +78,7 @@ print(arr)  # same result
 ```
 ## Q&A
 
-Q: I applied rolling to a numpy array but the array is not changed, why?
+Q: I applied `roll_ndarray()` to a numpy array but the array is not changed, why?
 
 A: It is highly likely the datatypes do not match. For example, numpy creates arrays in `np.float64` by default. If you create a `RollingMean_float` and use it in `roll_ndarray()`, Python will first perform a shallow copy of the array, casting it to float, then pass it to C++. In this case, `roll_ndarray()` will only changed the temporary array. To resolve this, either cast the original array into the appropriate dtpye using `np.astype()`, or use the appropriate function, e.g. `RollingMean_double` for the above exmaple.
 
