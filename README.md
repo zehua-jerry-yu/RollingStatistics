@@ -155,7 +155,7 @@ Now, you should find a file with name similar to `rolling_statistics_py.cp36-win
 
 All classes are derived from `RS::RollingStatistics` and provide the same interfaces, for both C++ and Python (except `roll_ndarray()`, which you will see).
 
-### constructor
+### RS::RollingStatistics<value_type>::RollingStatistics
 ```cpp
 RollingStatistics(bool skip_nan=true)
 ```
