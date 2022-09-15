@@ -98,7 +98,7 @@ print(arr[10, :20, 42])
 
 ## Prerequisites
 
-For both C++ and Python, you will need a distribution of `g++` that supports at least C++11. `g++` is mandatory, as the library uses `__gnu_pbds::tree` from libstdc++, which is part of the GNU implementation for C++ standard library.
+For both C++ and Python, you will need a distribution of `g++` that supports at least C++11. `g++` is mandatory, as this library uses `__gnu_pbds::tree` from libstdc++, which is part of the GNU implementation for C++ standard library.
 
 Additionally for Python, you need to install `Pybind11` in your Python environment, and it is highly recommended to create a virtual environment (either pure python, or an anaconda one).
 
