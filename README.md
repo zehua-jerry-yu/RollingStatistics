@@ -132,7 +132,7 @@ There is one drawback though: it is not possible to specify which compiler to us
 
 ### makefile
 
-For this method, you will first need to install `cmake`. Then, run the following commands in the project root directory:
+For this method, you will first need to install `cmake`. Then, run the following commands in the project root directory (the `/build` folder should be in parallel with `\src`):
 
 For Windows (MinGW),
 
