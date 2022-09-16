@@ -24,11 +24,8 @@ void roll_ndarray(py::array_t<D> arr, RS::RollingStatistics<D>& rs, size_t axis,
 
 template <typename D, class Class>
 void declare_array_RollingStatistics(py::module& m, const std::string& typestr) {
-    /*
-     * A helper function to expose derived classes to Python.
-     */
+    /*  A helper function to expose derived classes to Python.  */
     std::string pyclass_name = Class::name + std::string("_") + typestr;
-
     // tell pybind11 that DerivedClass<D> extends BaseClass<D>
     py::class_<Class, RS::RollingStatistics<D>>(m, pyclass_name.c_str())
         .def(py::init<bool>(), py::arg("skip_nan")=true)
@@ -40,6 +37,38 @@ void declare_array_RollingStatistics(py::module& m, const std::string& typestr) 
         .def("pop", &Class::pop)
         .def("compute", &Class::compute);
 }
+
+
+template <typename D, class Class>
+void declare_array_RollingRank(py::module& m, const std::string& typestr) {
+    std::string pyclass_name = Class::name + std::string("_") + typestr;
+    py::class_<Class, RS::RollingStatistics<D>>(m, pyclass_name.c_str())
+        .def(py::init<bool, bool>(), py::arg("skip_nan")=true, py::arg("normalize")=false)
+        .def("clear", &Class::clear)
+        .def("size_nan", &Class::size_nan)
+        .def("size_notnan", &Class::size_notnan)
+        .def("front", &Class::front)
+        .def("push", &Class::push, py::arg("val"))
+        .def("pop", &Class::pop)
+        .def("compute", &Class::compute);
+}
+
+
+template <typename D, class Class>
+void declare_array_RollingOrderStatistics(py::module& m, const std::string& typestr) {
+    std::string pyclass_name = Class::name + std::string("_") + typestr;
+    py::class_<Class, RS::RollingStatistics<D>>(m, pyclass_name.c_str())
+        .def(py::init<D, bool, bool>(), py::arg("order"), py::arg("skip_nan")=true, py::arg("normalize")=false)
+        .def_readwrite("order", &Class::order)
+        .def("clear", &Class::clear)
+        .def("size_nan", &Class::size_nan)
+        .def("size_notnan", &Class::size_notnan)
+        .def("front", &Class::front)
+        .def("push", &Class::push, py::arg("val"))
+        .def("pop", &Class::pop)
+        .def("compute", &Class::compute);
+}
+
 
 
 PYBIND11_MODULE(rolling_statistics_py, m) {
@@ -64,6 +93,8 @@ PYBIND11_MODULE(rolling_statistics_py, m) {
     declare_array_RollingStatistics<double, RS::RollingMax<double>>(m, std::string("double"));
     declare_array_RollingStatistics<float, RS::RollingMin<float>>(m, std::string("float"));
     declare_array_RollingStatistics<double, RS::RollingMin<double>>(m, std::string("double"));
-    declare_array_RollingStatistics<float, RS::RollingRank<float>>(m, std::string("float"));
-    declare_array_RollingStatistics<double, RS::RollingRank<double>>(m, std::string("double"));
+    declare_array_RollingRank<float, RS::RollingRank<float>>(m, std::string("float"));
+    declare_array_RollingRank<double, RS::RollingRank<double>>(m, std::string("double"));
+    declare_array_RollingOrderStatistics<float, RS::RollingOrderStatistics<float>>(m, std::string("float"));
+    declare_array_RollingOrderStatistics<double, RS::RollingOrderStatistics<double>>(m, std::string("double"));
 }
