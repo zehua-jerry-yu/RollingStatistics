@@ -1,10 +1,41 @@
 # `RollingStatistics`: Fast & Efficient Calculation of Rolling Mean/Variance/Maximum/Rank etc. for C++ and Python
 
+- [A Starter Example in C++](#a-starter-example-in-c)
+- [A Starter Example in Python](#a-starter-example-in-python)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  * [setuptools](#setuptools)
+  * [makefile](#makefile)
+  * [Colab](#colab)
+- [Usage Documentation: Interfaces](#usage-documentation-interfaces)
+  * [RS::RollingStatistics<value_type>::clear](#rsrollingstatisticsvalue_typeclear)
+  * [RS::RollingStatistics<value_type>::front](#rsrollingstatisticsvalue_typefront)
+  * [RS::RollingStatistics<value_type>::push](#rsrollingstatisticsvalue_typepush)
+  * [RS::RollingStatistics<value_type>::pop](#rsrollingstatisticsvalue_typepop)
+  * [RS::RollingStatistics<value_type>::size](#rsrollingstatisticsvalue_typesize)
+  * [RS::RollingStatistics<value_type>::size_nan](#rsrollingstatisticsvalue_typesize_nan)
+  * [RS::RollingStatistics<value_type>::size_notnan](#rsrollingstatisticsvalue_typesize_notnan)
+  * [RS::RollingStatistics<value_type>::compute](#rsrollingstatisticsvalue_typecompute)
+  * [RS::RollingStatistics<value_type>::roll_ndarray](#rsrollingstatisticsvalue_typeroll_ndarray)
+- [Usage Documentation: Classes](#usage-documentation-classes)
+  * [RS::RollingMean<value_type>](#rsrollingmeanvalue_type)
+  * [RS::RollingVariance<value_type>](#rsrollingvariancevalue_type)
+  * [RS::RollingSkewness<value_type>](#rsrollingskewnessvalue_type)
+  * [RS::RollingZScore<value_type>](#rsrollingzscorevalue_type)
+  * [RS::RollingMaximum<value_type>](#rsrollingmaximumvalue_type)
+  * [RS::RollingMinimum<value_type>](#rsrollingminimumvalue_type)
+  * [RS::RollingRank<value_type>](#rsrollingrankvalue_type)
+  * [RS::RollingOrderStatistics<value_type>](#rsrollingorderstatisticsvalue_type)
+- [Q&A](#qa)
+- [Future Updates](#future-updates)
+
+
 This is a lightweight library for calculation of rolling statistics, mainly in two ways:
 
 (1) Inplace calculation over an n-dimensional array along a specified axis, with a fixed window. The array should be represented by a pointer, and may have custom storage order (row-major, column-major or some custom strides). This would include `numpy.ndarray` and C arrays, for example.
 
 (2) Manual calculation with a flexible window, via `push()` and `pop()` operations.
+
 
 Let's get right into the examples.
 
