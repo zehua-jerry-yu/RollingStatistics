@@ -229,7 +229,6 @@ Returns the number of elements in the current window.
 size_t size_nan()
 ```
 
-CHANGE THIS
 Returns the number of NaN values in the current window.
 
 ### RS::RollingStatistics<value_type>::size_notnan
