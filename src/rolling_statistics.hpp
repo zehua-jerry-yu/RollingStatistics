@@ -227,11 +227,11 @@ protected:
         return this->get_moments()[0] / n;
     }
 public:
+    explicit RollingMean(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 1){}
     static const std::string name;
     void push(const D& val) {
         this->push_aux(val, 0);
     }
-    explicit RollingMean(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 1){}
 };
 template <typename D>
 const std::string RollingMean<D>::name = "RollingMean";
@@ -249,12 +249,12 @@ protected:
         return moments_[1] / n - x_mean * x_mean;
     }
 public:
+    explicit RollingVariance(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 2){}
     static const std::string name;
     void push(const D& val) {
         this->push_aux(val, 0);
         this->push_aux(val * val, 1);
     }
-    explicit RollingVariance(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 2){}
 };
 template <typename D>
 const std::string RollingVariance<D>::name = "RollingVariance";
@@ -283,13 +283,13 @@ protected:
         }
     }
 public:
+    explicit RollingSkewness(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 3){}
     static const std::string name;
     void push(const D& val) {
         this->push_aux(val, 0);
         this->push_aux(val * val, 1);
         this->push_aux(val * val * val, 2);
     }
-    explicit RollingSkewness(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 3){}
 };
 template <typename D>
 const std::string RollingSkewness<D>::name = "RollingSkewness";
@@ -312,6 +312,7 @@ protected:
         }
     }
 public:
+    explicit RollingZScore(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 3){}
     static const std::string name;
     void push(const D& val) {
         this->push_aux(val, 0);
@@ -325,7 +326,6 @@ public:
         this->pop_aux(0);
         this->pop_aux(2);
     }
-    explicit RollingZScore(bool skip_nan_=true): RollingMomentStatistics<D>(skip_nan_, 3){}
 };
 template <typename D>
 const std::string RollingZScore<D>::name = "RollingZScore";
@@ -338,11 +338,10 @@ protected:
     std::queue<D> vals_in_window;
     std::deque<D> maximums;
     D compute_aux(){
-        assert(!maximums.empty());
         return maximums.front();
     }
 public:
-    explicit RollingMax(bool skip_nan_){ this->skip_nan = skip_nan_; clear(); }
+    explicit RollingMax(bool skip_nan_=true){ this->skip_nan = skip_nan_; clear(); }
     static const std::string name;
     void clear() {
         /* can be manually called or called by the constructor */
@@ -386,11 +385,10 @@ protected:
     std::queue<D> vals_in_window;
     std::deque<D> minimums;
     D compute_aux(){
-        assert(!minimums.empty());
         return minimums.front();
     }
 public:
-    explicit RollingMin(bool skip_nan_){ this->skip_nan = skip_nan_; clear(); }
+    explicit RollingMin(bool skip_nan_=true){ this->skip_nan = skip_nan_; clear(); }
     static const std::string name;
     void clear() {
         /* can be manually called or called by the constructor */
@@ -433,12 +431,14 @@ class RollingRank : public RollingStatistics<D>{
 protected:
     std::deque<D> vals_in_window;
     order_statistics_tree<D> ost;
+    bool normalize = false;
     D compute_aux(){
-        assert(!vals_in_window.empty());
-        return ost.order_of_key(vals_in_window.back());
+        D val = ost.order_of_key(vals_in_window.back());
+        if (normalize){ val /= this->num_vals_notnan; }
+        return val;
     }
 public:
-    explicit RollingRank(bool skip_nan_){ this->skip_nan = skip_nan_; clear(); }
+    explicit RollingRank(bool skip_nan_=true, bool normalize_=false){ this->skip_nan = skip_nan_; normalize = normalize_; clear(); }
     static const std::string name;
     void clear() {
         /* can be manually called or called by the constructor */
@@ -473,6 +473,61 @@ public:
 };
 template <typename D>
 const std::string RollingRank<D>::name = "RollingRank";
+
+
+template <typename D>
+class RollingOrderStatistics : public RollingStatistics<D>{
+protected:
+    std::deque<D> vals_in_window;
+    order_statistics_tree<D> ost;
+    bool normalize = false;
+    D compute_aux(){
+        size_t real_order = std::min(this->num_vals_notnan - 1, static_cast<size_t>(normalize ? order * this->num_vals_notnan: order));
+        return *(ost.find_by_order(real_order));
+    }
+public:
+    D order = 0.0;
+    explicit RollingOrderStatistics(D order_, bool skip_nan_=true, bool normalize_=false){
+        order = order_;
+        this->skip_nan = skip_nan_;
+        normalize = normalize_;
+        clear();
+    }
+    static const std::string name;
+    void clear() {
+        /* can be manually called or called by the constructor */
+        vals_in_window = std::deque<D>();
+        ost = order_statistics_tree<D>();
+        this->num_vals_nan = 0;
+        this->num_vals_notnan = 0;
+    }
+    D front(){
+        assert(!vals_in_window.empty());
+        return vals_in_window.front();
+    }
+    void push(const D& val){
+        vals_in_window.push_back(val);
+        if (std::isnan(val)){
+            ++this->num_vals_nan;
+        } else {
+            ost.insert(val);
+            ++this->num_vals_notnan;
+        }
+    }
+    void pop(){
+        D val = front();
+        vals_in_window.pop_front();
+        if (std::isnan(val)){
+            --this->num_vals_nan;
+        } else {
+            ost.erase(ost.upper_bound(val));
+            --this->num_vals_notnan;
+        }
+    }
+};
+template <typename D>
+const std::string RollingOrderStatistics<D>::name = "RollingOrderStatistics";
+
 
 
 }  // namespace RS
