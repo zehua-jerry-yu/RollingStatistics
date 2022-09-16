@@ -208,14 +208,14 @@ Returns the oldest element in the current window. Unlike in STL containers, this
 void push(const value_type& val)
 ```
 
-Pushes a value into the internal data structures.
+Pushes a value into the current window.
 
 ### RS::RollingStatistics<value_type>::pop
 ```cpp
 void pop()
 ```
 
-Pops the oldest value in the current window from the internal data structures.
+Pops the oldest value from the current window.
 
 ### RS::RollingStatistics<value_type>::size
 ```cpp
