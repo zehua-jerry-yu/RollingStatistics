@@ -121,7 +121,7 @@ For C++, no installation is needed, the only file you need is `src/rolling_stati
 
 ### setuptools
 
-This method is the easiest, just run the following commands in the project root folder:
+This method is the easiest, you only need the 3 files in `/src`, then just run the following commands in the project root folder:
 
 ```
 $ cd src
