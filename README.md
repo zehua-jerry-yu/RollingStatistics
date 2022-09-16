@@ -299,6 +299,18 @@ Yields (biased) rolling skewness estimation for computation. $O(n)$ time and $O(
 
 $$\frac{\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^3}{|I|}}{(\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^2}{|I|})^{1.5}}$$
 
+
+### RS::RollingZScore<value_type>
+
+```cpp
+RollingZScore(bool skip_nan=true);
+```
+
+Yields rolling z-score for computation. $O(n)$ time and $O(max|I|)$ space complexity.
+
+$$\frac{X_{-1} - \frac{ \Sigma_{i \in I}X_i}{|I|}}{\sqrt{\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^2}{|I|}}}$$
+
+
 ### RS::RollingMaximum<value_type>
 
 ```cpp
