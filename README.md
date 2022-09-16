@@ -151,6 +151,8 @@ $ make install
 
 Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
 
+If somehow neither of the methods works, you can leave a message or check on the [Pybind11 Documentation](https://pybind11.readthedocs.io/en/stable/compiling.html#build-systems) for other methods.
+
 ## Usage Documentation: Interfaces
 
 All classes are derived from `RS::RollingStatistics` and provide the same interfaces, for both C++ and Python (except `roll_ndarray()`, which you will see).
