@@ -336,7 +336,7 @@ RollingOrderStatistics(value_type order, bool skip_nan=true, bool normalize=fals
 public: value_type order = 0.0;
 ```
 
-If not `normalize`, yields the `order`-th (rounded off and truncated to be at most `size_notnan() - 1`) order statistic for computation; otherwise, yields the `order * size_notnan()`-th order statistic. $O(nlog(max|I|))$ time and $O(max|I|)$ space complexity.
+If not `normalize`, yields the `order`-th (rounded off and truncated to be at most `size_notnan() - 1`) order statistic for computation; otherwise, yields the `order * size_notnan()`-th order statistic (equivalent to an empirical inverse cumulative distribution function). $O(nlog(max|I|))$ time and $O(max|I|)$ space complexity.
 
 
 ## Q&A
