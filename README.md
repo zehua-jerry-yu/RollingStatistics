@@ -76,9 +76,9 @@ rolling_mean = rsp.RollingMean_float()
 rsp.roll_ndarray_float(arr, rolling_mean, axis=0, window=3, min_periods=2)
 print(arr)  # same result as C++.
 
-# structured exmaple 2:
+# structured example 2:
 # suppose we have 20 days of stock returns, 5000 stocks and 240 minutes per day. This array is about 100MB in float32.
-# now we want the 5-minunte rolling rank of returns in each minute, with at least 3 valid entries in the window.
+# now we want the 5-minute rolling rank of returns in each minute, with at least 3 valid entries in the window.
 np.random.seed(0)
 arr = np.random.randn(20, 240, 5000).astype('float32')  # explicitly cast to float32
 print(arr[10, :20, 42])  # check the first 20 minutes of stock no.43 on day 11
