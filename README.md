@@ -105,11 +105,15 @@ Additionally for Python, you need to install `Pybind11` in your Python environme
 
 Installing from pip in the virtual environment is easy:
 
-`$ .../env_name/Scripts/pip install pybind11`
+```
+$ .../env_name/Scripts/pip install pybind11
+```
 
 Or with anaconda, simply run the following commands with the virtual environment activated:
 
-`$ conda install pybind11`
+```
+$ conda install pybind11
+```
 
 ## Installation
 
