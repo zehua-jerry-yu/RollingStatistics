@@ -275,9 +275,9 @@ roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
 
 ### RS::RollingMean<value_type>
 
-Yields rolling mean for computation. Uses `std::queue` as internal data structure. `O(n)` time and `O(max|I|)` space complexity, where $n$ id the size of the entire array (for a structured array, it is the production of all values in `shape`), and $I$ is the set of indices in the current window, for a particular cell. $max|I|$ is the maximum size of windows throughout the lifetime of the object (which is fixed for `roll_ndarray`).
+Yields rolling mean for computation. Uses `std::queue` as internal data structure. $O(n)$ time and $O(max|I|)$ space complexity, where $n$ id the size of the entire array (for a structured array, it is the product of all values in `shape`), and $I$ is the set of non-NaN indices in the current window, $max|I|$ is the maximum size of windows throughout the lifetime of the object (which is fixed for `roll_ndarray`).
 
-Denote $I$ as 
+If $|I| > 0$ and there are no NaNs propagated, `compute()` will return the following, otherwise it returns `NAN`.
 
 $$\frac{ \Sigma_{i \in I}X_i}{|I|}$$
 
