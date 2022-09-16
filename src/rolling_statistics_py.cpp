@@ -1,4 +1,4 @@
-#include <math.h>
+#include <math.h>  // must import before pybind11
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
