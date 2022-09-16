@@ -160,7 +160,7 @@ If somehow neither of the methods works, you can leave a message or check on the
 
 ### Colab
 
-Setting up environment and resolving issues can be painful. What if there is a standard that is guaranteed to work for everyone? Well, if you are using Colab, you can just copy `src/` into your `MyDirve/` folder on your Google Drive, create a notebook in `src/` with the following commands and you are ready to go:
+Setting up environment and resolving issues can be painful. What if there is a standard environment that is guaranteed to work for everyone? Well, if you are using Colab, you can just copy `src/` into your `MyDirve/` folder on your Google Drive, create a notebook in `src/` with the following commands and you are ready to go:
 
 ```py
 from google.colab import drive
