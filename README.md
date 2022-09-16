@@ -154,9 +154,29 @@ $ make
 $ make install
 ```
 
-Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, and you are ready to go. To test whether the library is properly installed, you can run `usage_example_python.py` in your virtual environment.
+Now, you should find a file with name similar to `rolling_statistics_py.cp36-win_amd64.pyd` in your `.../env_name/Lib/site-packages` folder, which indicates the library is installed. To test it, you can run `usage_example_python.py` in your virtual environment.
 
 If somehow neither of the methods works, you can leave a message or check on the [Pybind11 Documentation](https://pybind11.readthedocs.io/en/stable/compiling.html#build-systems) for other methods.
+
+### Colab
+
+Setting up environment and resolving issues can be painful. What if there is a standard that is guaranteed to work for everyone? Well, if you are using Colab, you can just copy `src/` under your `MyDirve/` folder on your Google Drive, create a notebook in `src/` with the following commands and you are ready to go:
+
+```py
+from google.colab import drive
+drive.mount('/content/drive')
+!cp /content/drive/MyDrive/src/* .
+!pip install pybind11==2.9.1
+!python setup.py install
+!cp *.egg /content/drive/MyDrive/src
+import sys
+sys.path.append('/content/drive/MyDrive/src/rolling_statistics_py-0.0.0-py3.7-linux-x86_64.egg')
+
+import numpy as np
+import rolling_statistics_py as rsp
+# ...
+```
+
 
 ## Usage Documentation: Interfaces
 
