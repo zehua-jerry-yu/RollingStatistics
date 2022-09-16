@@ -123,7 +123,7 @@ cd src
 python setup.py install
 ```
 
-There is one drawback though: it is not possible to specify which compiler to use. Therefore, on Windows, there is a high chance that the MSVC compiler will be used by default. If you see some errors along the lines of `"ext/pb_ds/assoc_container.hpp": No such file or directory`, that would be the case, and you need to use the second method.
+There is one drawback though: it is not possible to specify which compiler to use. Therefore, on Windows, there is a high chance that the MSVC compiler will be used by default. If you see some errors along the lines of `"ext/pb_ds/assoc_container.hpp": No such file or directory`, that would be the case, and you need to use the second method. If successful, `setup.py` will automatically copy a `.egg` file to your project root folder. This file is essentially a zip file, and the internal contents depend on your OS: for Windows it will be `.pyd`, for Linux it will be `.so`. In any case, Python wraps it in a neat manner, and you can directly import with `import rolling_statistics_py` without extracting it.
 
 ### makefile
 
