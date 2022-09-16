@@ -182,13 +182,6 @@ import rolling_statistics_py as rsp
 
 All classes are derived from `RS::RollingStatistics` and provide the same interfaces, for both C++ and Python (except `roll_ndarray()`, which you will see).
 
-### RS::RollingStatistics<value_type>::RollingStatistics
-```cpp
-RollingStatistics(bool skip_nan=true)
-```
-
-The constructor. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
-
 ### RS::RollingStatistics<value_type>::clear
 ```cpp
 void clear()
@@ -274,7 +267,13 @@ roll_ndarray(ndarray, rolling_statistics, axis, window, min_periods)
 
 ### RS::RollingMean<value_type>
 
-Yields rolling mean for computation. Uses `std::queue` as internal data structure. $O(n)$ time and $O(max|I|)$ space complexity, where $n$ id the size of the entire array (for a structured array, it is the product of all values in `shape`), and $I$ is the set of non-NaN indices in the current window, $max|I|$ is the maximum size of windows throughout the lifetime of the object (which is fixed for `roll_ndarray`).
+```cpp
+RollingMean(bool skip_nan=true);
+```
+
+The syntax of the constructor is as above. It accepts one parameter `skip_nan`. If this is true (by default), then computation of the rolling statistics will skip all NaN values inside the window, as seen in the unstructured example of C++. Otherwise, any NaN value within the window will propagate, i.e. `compute()` will return `NAN`.
+
+`RollingMean` yields rolling mean estimation for computation. $O(n)$ time and $O(max|I|)$ space complexity, where $n$ id the size of the entire array (for a structured array, it is the product of all values in `shape`), and $I$ is the set of non-NaN indices in the current window, $max|I|$ is the maximum size of windows throughout the lifetime of the object (which is fixed for `roll_ndarray`).
 
 If $|I| > 0$ and there are no NaNs propagated, `compute()` will return the following, otherwise it returns `NAN`.
 
@@ -282,21 +281,62 @@ $$\frac{ \Sigma_{i \in I}X_i}{|I|}$$
 
 ### RS::RollingVariance<value_type>
 
-Yields (biased) rolling variance for computation. Uses `std::queue` as internal data structure. `O(n)` time and `O(window)` space complexity.
+```cpp
+RollingVariance(bool skip_nan=true);
+```
+
+Yields (biased) rolling variance estimation for computation. $O(n)$ time and $O(max|I|)$ space complexity.
+
+$$\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^2}{|I|}$$
 
 ### RS::RollingSkewness<value_type>
 
+```cpp
+RollingSkewness(bool skip_nan=true);
+```
+
+Yields (biased) rolling skewness estimation for computation. $O(n)$ time and $O(max|I|)$ space complexity.
+
+$$\frac{\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^3}{|I|}}{(\frac{ \Sigma_{i \in I}(X_i - \frac{ \Sigma_{i \in I}X_i}{|I|})^2}{|I|})^{1.5}}$$
 
 ### RS::RollingMaximum<value_type>
 
+```cpp
+RollingMaximum(bool skip_nan=true);
+```
+
+Yields rolling maximum for computation. $O(n)$ time and $O(max|I|)$ space complexity.
+
+$$max_{i \in I} \\{ X_i \\} $$
 
 ### RS::RollingMinimum<value_type>
 
+```cpp
+RollingMinimum(bool skip_nan=true);
+```
+
+Yields rolling miniumum for computation. $O(n)$ time and $O(max|I|)$ space complexity.
+
+$$min_{i \in I} \\{ X_i \\} $$
 
 ### RS::RollingRank<value_type>
 
+```cpp
+RollingMinimum(bool skip_nan=true, bool normalize=false);
+```
 
-### RS::RollingQuantile<value_type>
+Yields rolling rank for computation, i.e. the number of values smaller than the most recent one ( $X_{-1}$ ), divided by the number of non-NaN values in the window if `normalize`. $O(nlog(max|I|))$ time and $O(max|I|)$ space complexity.
+
+$$\frac{|\\{ i \in I \| X_i < X_{-1} \\}|}{(|I|)^{normalize}}$$
+
+### RS::RollingOrderStatistics<value_type>
+
+```cpp
+RollingOrderStatistics(value_type order, bool skip_nan=true, bool normalize=false);
+public: value_type order = 0.0;
+```
+
+If not `normalize`, yields the `order`-th (rounded off and truncated to be at most `size_notnan() - 1`) order statistic for computation; otherwise, yields the `order * size_notnan()`-th order statistic. $O(nlog(max|I|))$ time and $O(max|I|)$ space complexity.
 
 
 ## Q&A
