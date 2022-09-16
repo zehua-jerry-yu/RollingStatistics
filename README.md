@@ -98,7 +98,7 @@ print(arr[10, :20, 42])
 
 ## Prerequisites
 
-For both C++ and Python, you will need a distribution of `g++` that supports at least C++11. `g++` is mandatory, as this library uses `__gnu_pbds::tree` from libstdc++, which is part of the GNU implementation for C++ standard library.
+For both C++ and Python, you will need a distribution of `g++` (8.2.0+) that supports at least C++11. `g++` is mandatory, as this library uses `__gnu_pbds::tree` from libstdc++, which is part of the GNU implementation for C++ standard library.
 
 Additionally for Python, you need to install `Pybind11` in your Python environment, and it is highly recommended to create a virtual environment (either pure python, or an anaconda one).
 
@@ -278,6 +278,10 @@ Yields (biased) rolling variance for computation. Uses `std::queue` as internal 
 Q: I applied `roll_ndarray()` to a numpy array but the array is not changed, why?
 
 A: It is highly likely the datatypes do not match. For example, numpy creates arrays in `np.float64` by default. If you create a `RollingMean_float` and use it in `roll_ndarray()`, Python will first perform a shallow copy of the array, casting it to float, then pass it to C++. In this case, `roll_ndarray()` will only change the temporary array, which is soon destroyed. To resolve this, either cast the original array into the appropriate dtpye using `np.astype()`, or use the appropriate function, e.g. `RollingMean_double` for the above exmaple.
+
+Q: I have the error `fatal error: ext/pb_ds/detail/resize_policy/hash_standard_resize_policy_imp.hpp: no such file or directory` during compilation!
+
+A: See this [post](https://codeforces.com/blog/entry/69409). In case the link is obsolete, you need to go to `C:\MinGW\lib\gcc\mingw32\8.2.0\include\c++\ext\pb_ds\detail\resize_policy`, rename the file `hash_standard_resize_policy_imp.hpp0000644` to `hash_standard_resize_policy_imp.hpp`.
 
 ## Future Updates
 
