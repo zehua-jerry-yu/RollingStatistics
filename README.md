@@ -314,3 +314,5 @@ A: See this [post](https://codeforces.com/blog/entry/69409). In case the link is
 (1) Optimize virtual functions.
 
 (2) Implement support for multiple windows in `RollingMomentStatistics`, and some two-sample t-tests.
+
+Any suggestions/discussions are welcome, especially about code optimization!
