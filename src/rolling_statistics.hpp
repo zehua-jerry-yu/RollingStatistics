@@ -62,8 +62,8 @@ public:
     virtual void clear() = 0;
     // accessor functions
     inline size_t size() const { return num_vals_nan + num_vals_notnan; }
-    inline const size_t& size_nan() const { return num_vals_nan; }
-    inline const size_t& size_notnan() const { return num_vals_notnan; }
+    inline size_t size_nan() const { return num_vals_nan; }
+    inline size_t size_notnan() const { return num_vals_notnan; }
     virtual D front() = 0;
     virtual void push(const D& val) = 0;
     virtual void pop() = 0;
