@@ -148,7 +148,7 @@ $ conda install pybind11
 
 ## Installation
 
-For C++, no installation is needed, the only file you need is `src/rolling_statistics.hpp`. For Python, two installation methods are provided:
+For C++, no installation is needed, the only file you need is `src/rolling_statistics.hpp`. For Python, two installation methods are provided (the module generated is dependent on system and software version so I cannot simply upload mine):
 
 ### setuptools
 
